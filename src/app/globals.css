@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* GitHub Primer - dark */
+  --color-paper: #0d1117; /* canvas.default */
+  --color-card: #161b22; /* canvas.subtle */
+  --color-inset: #010409; /* canvas.inset / header */
+  --color-ink: #e6edf3; /* fg.default */
+  --color-muted: #8b949e; /* fg.muted */
+  --color-line: #30363d; /* border.default */
+  --color-accent: #2f81f7; /* accent.fg */
+  --color-accent-soft: rgba(56, 139, 253, 0.15); /* accent.subtle */
+  --color-done: #a371f7; /* done.fg (purple) */
+  --color-lime: #3fb950; /* success.fg */
+  --color-btn: #238636; /* btn.primary.bg */
+  /* nucleotide colours, mapped to Primer scales */
+  --color-nt-a: #3fb950;
+  --color-nt-c: #58a6ff;
+  --color-nt-g: #d29922;
+  --color-nt-t: #f85149;
+
+  --font-sans: var(--font-mona), -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-mona), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+::selection {
+  background: rgba(56, 139, 253, 0.4);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- marquee ---------- */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-speed, 40s) linear infinite;
+}
+.marquee-track[data-reverse] {
+  animation-direction: reverse;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- faq ---------- */
+details summary::-webkit-details-marker {
+  display: none;
+}
+details[open] .faq-plus {
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
