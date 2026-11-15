@@ -31,7 +31,7 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
       <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8" priority />
-      <span className="text-lg font-semibold tracking-tight">virotica</span>
+      <span className="text-xl font-semibold tracking-tight">virotica</span>
     </Link>
   );
 }
@@ -40,7 +40,7 @@ export function Logo({ className = "" }: { className?: string }) {
 type BtnProps = { href: string; children: ReactNode; variant?: "primary" | "secondary" | "ghost" | "light" };
 export function Button({ href, children, variant = "primary" }: BtnProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors";
+    "inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 text-base font-semibold transition-colors";
   const styles = {
     primary: "bg-btn text-white ring-1 ring-white/10 hover:bg-[#2ea043]",
     secondary: "bg-[#21262d] text-ink ring-1 ring-line hover:bg-[#30363d] hover:ring-[#8b949e]",
@@ -58,7 +58,7 @@ export function Button({ href, children, variant = "primary" }: BtnProps) {
 export function H2({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <h2
-      className={`font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-balance md:text-6xl ${className}`}
+      className={`text-4xl font-semibold leading-[1.08] tracking-[-0.025em] text-balance md:text-6xl ${className}`}
     >
       {children}
     </h2>

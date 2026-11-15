@@ -36,6 +36,8 @@ html {
 body {
   background: var(--color-paper);
   color: var(--color-ink);
+  font-size: 1.0625rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -52,14 +54,6 @@ body {
   to {
     transform: translateX(-50%);
   }
-}
-
-/* ---------- faq ---------- */
-details summary::-webkit-details-marker {
-  display: none;
-}
-details[open] .faq-plus {
-  transform: rotate(45deg);
 }
 
 @media (prefers-reduced-motion: reduce) {

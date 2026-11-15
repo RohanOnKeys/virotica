@@ -1,25 +1,20 @@
 import Link from "next/link";
-import { Flick } from "./Flick";
-import { Button, Logo, Mascot } from "./ui";
+import { EmailSignup } from "./EmailSignup";
+import { ICONS, Octicon } from "./icons";
+import { H2, Logo, Mascot } from "./ui";
 
-export function FinalCta() {
+export function SignupBand() {
   return (
-    <section className="px-4 py-12">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-2xl bg-card px-6 pb-0 pt-16 text-center ring-1 ring-line md:pt-24">
-        <Flick blur={13} />
-        <div className="relative">
-          <h2 className="mx-auto max-w-3xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.035em] text-balance md:text-7xl">
-            Your lab&apos;s genomes, on main.
-          </h2>
-          <p className="mx-auto mt-5 max-w-md text-lg text-muted">
-            Create your first repository in under a minute. Free for public science.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="#">Start a repository</Button>
-          </div>
-          <div className="mt-12 flex justify-center">
-            <Mascot size={300} />
-          </div>
+    <section className="px-4 py-32 md:py-40">
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <Mascot size={260} className="mb-10" />
+        <H2>Join the open registry for biology</H2>
+        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-muted">
+          Every repository adds something to the shared record. See what labs are sequencing, then create an account
+          and push your own.
+        </p>
+        <div className="mt-10 flex w-full justify-center">
+          <EmailSignup id="footer-email" />
         </div>
       </div>
     </section>
@@ -27,29 +22,43 @@ export function FinalCta() {
 }
 
 const COLS = [
-  { h: "Product", links: ["Registry", "CLI", "API", "Pricing", "Changelog"] },
-  { h: "Trust", links: ["Biosafety policy", "Sequence screening", "Security", "Privacy", "Terms"] },
-  { h: "Contact", links: ["hello@example.com", "Institutions", "Press", "Careers"] },
+  { h: "Product", links: ["Registry", "Screening", "CLI", "Pipelines", "Releases", "Access control", "Pricing", "All features"] },
+  { h: "Developers", links: ["API", "CLI docs", "File formats", "Integrations", "Changelog"] },
+  { h: "Support", links: ["Docs", "Community forum", "Biosafety policy", "Status", "Contact"] },
+  { h: "Company", links: ["About", "Blog", "Careers", "Press", "Security"] },
+];
+
+const SOCIAL = [
+  { label: "Virotica on GitHub", href: "https://github.com/RohanOnKeys/virotica", icon: ICONS.github },
+  { label: "Virotica on X", href: "#", icon: ICONS.x },
+  { label: "Virotica on LinkedIn", href: "#", icon: ICONS.linkedin },
 ];
 
 export function Footer() {
   return (
-    <footer className="overflow-hidden px-4 pt-20">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
+    <footer className="relative z-10 border-t border-line px-4 pt-16">
+      <div className="mx-auto max-w-[1280px] md:px-4">
+        <div className="grid gap-12 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
+          <div className="max-w-xs">
             <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              The registry for biological code. Version, review, fork and cite the sequences behind your science.
+            <h3 className="mt-6 text-lg font-semibold">The Virotica newsletter</h3>
+            <p className="mt-2 text-base leading-relaxed text-muted">
+              Guides, release notes and biosafety updates. Twice a month, in your inbox.
             </p>
+            <Link
+              href="#"
+              className="mt-5 inline-block rounded-md bg-[#21262d] px-4 py-2 text-base font-medium ring-1 ring-line hover:bg-[#30363d]"
+            >
+              Subscribe
+            </Link>
           </div>
           {COLS.map((c) => (
             <div key={c.h}>
-              <div className="text-sm font-semibold">{c.h}</div>
-              <ul className="mt-4 space-y-2.5 text-sm text-muted">
+              <h3 className="text-base font-semibold">{c.h}</h3>
+              <ul className="mt-4 space-y-3">
                 {c.links.map((l) => (
                   <li key={l}>
-                    <Link href="#" className="hover:text-ink">
+                    <Link href="#" className="text-base text-muted hover:text-[#58a6ff]">
                       {l}
                     </Link>
                   </li>
@@ -58,15 +67,27 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-16 flex flex-col justify-between gap-2 border-t border-line pt-6 text-xs text-muted sm:flex-row">
-          <span>© 2026 Virotica</span>
+
+        <div className="mt-16 flex flex-col gap-6 border-t border-line py-8 text-[15px] text-muted md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <span>© 2026 Virotica</span>
+            {["Terms", "Privacy", "Manage cookies"].map((l) => (
+              <Link key={l} href="#" className="hover:text-[#58a6ff]">
+                {l}
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center gap-5">
+            {SOCIAL.map((s) => (
+              <a key={s.label} href={s.href} aria-label={s.label} className="hover:text-ink">
+                <Octicon d={s.icon} size={20} />
+              </a>
+            ))}
+            <span className="flex items-center gap-2 rounded-md px-3 py-1.5 ring-1 ring-line">
+              <Octicon d={ICONS.globe} /> English
+            </span>
+          </div>
         </div>
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none mt-6 select-none text-center font-display text-[24vw] font-bold leading-[0.75] tracking-[-0.06em] text-ink/[0.05]"
-      >
-        virotica
       </div>
     </footer>
   );

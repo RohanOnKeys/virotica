@@ -1,26 +1,26 @@
-import { AnyLab } from "@/components/AnyLab";
-import { Biosafety } from "@/components/Biosafety";
-import { FinalCta, Footer } from "@/components/Closing";
-import { Faq } from "@/components/Faq";
-import { FormatsBand } from "@/components/FormatsBand";
+import { Activity } from "@/components/Activity";
+import { Footer, SignupBand } from "@/components/Closing";
+import { Community } from "@/components/Community";
+import { Flick } from "@/components/Flick";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
-import { Registry } from "@/components/Registry";
-import { Steps } from "@/components/Steps";
+import { CtaBand, Platform } from "@/components/Platform";
+import { Walkthrough } from "@/components/Walkthrough";
 
 export default function Home() {
   return (
     <>
+      {/* one cursor-reactive layer behind the whole page: no section edges to cut the bars off */}
+      <Flick fixed />
       <Nav />
-      <main>
+      <main className="relative z-10">
         <Hero />
-        <AnyLab />
-        <Registry />
-        <FormatsBand />
-        <Steps />
-        <Biosafety />
-        <Faq />
-        <FinalCta />
+        <Walkthrough />
+        <Activity />
+        <Platform />
+        <CtaBand />
+        <Community />
+        <SignupBand />
       </main>
       <Footer />
     </>

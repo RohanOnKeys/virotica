@@ -5,24 +5,26 @@ import { useEffect, useRef } from "react";
 /**
  * Cursor-reactive blurred "equalizer" background.
  *
- * - A small canvas (1/4 of the section size) is stretched to 100% and blurred with CSS,
+ * - A small canvas (1/4 of the layer size) is stretched to 100% and blurred with CSS,
  *   so each canvas pixel becomes ~4 screen pixels.
- * - Nothing is drawn at rest. Moving the pointer over the parent section charges the
- *   bar columns near the cursor (faster movement = taller bars); they then decay away.
+ * - Nothing is drawn at rest. Moving the pointer charges the bar columns near the cursor
+ *   (faster movement = taller bars); they then decay back into the black.
+ * - With `fixed`, one layer sits behind the whole page, so bars are never cut off at a
+ *   section edge.
  * - Bars are solid low-alpha fills. No gradients.
  */
 
 type Col = {
-  x: number; // left edge, canvas px
-  w: number; // width, canvas px
-  hMul: number; // per-column height variation
-  e: number; // energy 0..1
-  cy: number; // vertical centre the bar grows from
+  x: number;
+  w: number;
+  hMul: number;
+  e: number;
+  cy: number;
   color: string;
-  a: number; // per-column alpha variation
+  a: number;
 };
 
-// GitHub Primer dark palette, by region of the section
+// GitHub Primer dark palette, by region of the screen
 const TOP = ["#2f81f7", "#58a6ff", "#a371f7", "#8957e5", "#79c0ff", "#bc8cff"]; // blue / violet
 const BOTTOM_RIGHT = ["#db61a2", "#f778ba", "#f85149", "#ff7b72"]; // pink / red
 const BOTTOM_LEFT = ["#f0883e", "#d29922", "#ffa657", "#e3b341"]; // orange / amber
@@ -30,13 +32,15 @@ const BOTTOM_LEFT = ["#f0883e", "#d29922", "#ffa657", "#e3b341"]; // orange / am
 const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
 
 export function Flick({
+  fixed = false,
   blur = 13,
   alpha = 0.75,
   radius = 150, // screen px around the cursor that light up
-  reach = 0.55, // max bar height as a fraction of section height
+  reach = 0.55, // max bar height as a fraction of layer height
   decay = 0.93, // energy multiplier per frame
   className = "",
 }: {
+  fixed?: boolean;
   blur?: number;
   alpha?: number;
   radius?: number;
@@ -51,8 +55,7 @@ export function Flick({
     const wrap = wrapRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const host = wrap?.parentElement;
-    if (!wrap || !canvas || !ctx || !host) return;
+    if (!wrap || !canvas || !ctx) return;
 
     let W = 0;
     let H = 0;
@@ -69,7 +72,7 @@ export function Flick({
       canvas.height = H;
       cols = [];
       for (let x = 0; x < W; ) {
-        const w = 2 + Math.random() * 3.5; // ~8–22 screen px
+        const w = 2 + Math.random() * 3.5;
         cols.push({ x, w, hMul: 0.4 + Math.random() * 0.6, e: 0, cy: H / 2, color: TOP[0], a: 0.5 + Math.random() * 0.5 });
         x += w + 0.6 + Math.random() * 1.8;
       }
@@ -103,19 +106,15 @@ export function Flick({
       }
     };
 
-    const kick = () => {
-      if (!running) {
-        running = true;
-        raf = requestAnimationFrame(loop);
-      }
-    };
-
     const onMove = (ev: PointerEvent) => {
       const r = wrap.getBoundingClientRect();
       const px = ev.clientX - r.left;
       const py = ev.clientY - r.top;
+      if (px < 0 || py < 0 || px > r.width || py > r.height) {
+        last = null;
+        return;
+      }
       const now = performance.now();
-      // speed in screen px per ms, from the previous pointer sample
       let speed = 0.6;
       if (last) {
         const dt = Math.max(8, now - last.t);
@@ -142,29 +141,30 @@ export function Flick({
         }
         c.e = Math.min(1, c.e + add);
       }
-      kick();
-    };
-
-    const onLeave = () => {
-      last = null;
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(loop);
+      }
     };
 
     build();
     const ro = new ResizeObserver(build);
     ro.observe(wrap);
-    host.addEventListener("pointermove", onMove, { passive: true });
-    host.addEventListener("pointerleave", onLeave);
+    window.addEventListener("pointermove", onMove, { passive: true });
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      host.removeEventListener("pointermove", onMove);
-      host.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointermove", onMove);
     };
   }, [alpha, radius, reach, decay]);
 
   return (
-    <div ref={wrapRef} aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
+    <div
+      ref={wrapRef}
+      aria-hidden
+      className={`pointer-events-none ${fixed ? "fixed" : "absolute"} inset-0 overflow-hidden ${className}`}
+    >
       <canvas ref={canvasRef} className="block h-full w-full" style={{ filter: `blur(${blur}px) saturate(1.2)` }} />
     </div>
   );
